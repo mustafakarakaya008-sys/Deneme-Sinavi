@@ -1,0 +1,11 @@
+# Kişisel veri: asla GitHub'a gitmez
+veriler/
+excel-surumu/
+*.xls
+*.xlsx
+*.xlsm
+*.pdf
+.DS_Store
+# Öğretmen adları içeren proje notları ve Claude ayarları yalnız bu bilgisayarda kalır
+CLAUDE.md
+.claude/
