@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deneme Sınavı Salon ve Gözetmen</title>
+<style>
+  :root {
+    --zemin: #f4f5f7; --kart: #ffffff; --yazi: #1d2330; --soluk: #5d6577; --cizgi: #d9dde5;
+    --vurgu: #1f5fbf; --vurgu-acik: #e6eefb; --uyari: #9a5b00; --uyari-zemin: #fff4e0; --hata: #b42318;
+    --s5: #dbe8ff; --s5c: #2f5ea8; --s6: #dcf3e3; --s6c: #2b7a46; --s7: #fff0d6; --s7c: #9a6200; --s8: #f1e3fb; --s8c: #7a3fa0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --zemin: #15181e; --kart: #1f232b; --yazi: #e7e9ee; --soluk: #a2a9b8; --cizgi: #343a46;
+      --vurgu: #7aa7f0; --vurgu-acik: #22324d; --uyari: #f0b45a; --uyari-zemin: #3a2d17; --hata: #f08b80;
+      --s5: #22324d; --s5c: #9cc0ff; --s6: #1e3a2a; --s6c: #8fd9a8; --s7: #3d3020; --s7c: #f0c27a; --s8: #34253f; --s8c: #d6a8f5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--zemin); color: var(--yazi); font: 15px/1.45 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+  header { padding: 18px 16px 10px; max-width: 1180px; margin: 0 auto; }
+  header .ust { font-size: 12px; letter-spacing: .04em; color: var(--soluk); }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  header .hazirlayan { font-size: 13px; color: var(--soluk); }
+  main { max-width: 1180px; margin: 0 auto; padding: 0 16px 40px; }
+  .kart { background: var(--kart); border: 1px solid var(--cizgi); border-radius: 10px; padding: 16px; margin-bottom: 14px; }
+  .kart h2 { font-size: 16px; margin: 0 0 10px; }
+  .ipucu { color: var(--soluk); font-size: 13px; margin: 6px 0 0; }
+  .kvkk { background: var(--vurgu-acik); border-radius: 8px; padding: 8px 12px; font-size: 13px; margin-top: 10px; }
+  .izgara { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+  label.alan { display: block; font-size: 13px; color: var(--soluk); margin-bottom: 4px; }
+  input[type=date], input[type=number], input[type=search], select {
+    width: 100%; padding: 8px 10px; border: 1px solid var(--cizgi); border-radius: 8px; background: var(--kart); color: var(--yazi); font: inherit;
+  }
+  input[type=file] { font: inherit; max-width: 100%; }
+  .durum { font-size: 13px; margin-top: 6px; }
+  .durum.tamam { color: var(--s6c); } .durum.hata { color: var(--hata); }
+  .liste { max-height: 220px; overflow: auto; border: 1px solid var(--cizgi); border-radius: 8px; padding: 6px 8px; margin-top: 6px; }
+  .liste label { display: block; padding: 2px 0; font-size: 14px; }
+  .subeler { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .subeler label { border: 1px solid var(--cizgi); border-radius: 6px; padding: 3px 8px; font-size: 13px; white-space: nowrap; }
+  .ozet { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; }
+  .ozet b { font-size: 18px; }
+  .uyari { background: var(--uyari-zemin); color: var(--uyari); border-radius: 8px; padding: 8px 12px; font-size: 13px; margin-top: 10px; }
+  .sekmeler { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 12px; }
+  .sekmeler button { border: 1px solid var(--cizgi); background: var(--kart); color: var(--yazi); padding: 8px 14px; border-radius: 8px; font: inherit; cursor: pointer; }
+  .sekmeler button[aria-selected=true] { background: var(--vurgu); border-color: var(--vurgu); color: #fff; }
+  .tablo-kap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { border-bottom: 1px solid var(--cizgi); padding: 6px 8px; text-align: left; vertical-align: top; }
+  th { font-size: 12px; color: var(--soluk); font-weight: 600; }
+  td.not, span.not { color: var(--uyari); font-size: 13px; }
+  td.bos { color: var(--hata); }
+  h3 { font-size: 15px; margin: 18px 0 8px; }
+  .secici { display: flex; gap: 10px; align-items: end; flex-wrap: wrap; margin-bottom: 12px; }
+  .secici > div { min-width: 200px; }
+  .gozetmen-baslik { font-size: 14px; margin-bottom: 10px; }
+  .tahta { text-align: center; font-size: 12px; letter-spacing: .2em; color: var(--soluk); border: 1px solid var(--cizgi); border-radius: 6px; padding: 4px; margin-bottom: 10px; }
+  .sinif { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
+  .dik { display: grid; gap: 8px; }
+  .masa { display: grid; grid-template-columns: 1fr 1fr; gap: 3px; }
+  .koltuk { border-radius: 6px; padding: 4px 5px; min-height: 58px; font-size: 11px; line-height: 1.25; border: 1px solid var(--cizgi); overflow: hidden; }
+  .koltuk .no { font-weight: 700; font-size: 12px; }
+  .koltuk .sb { opacity: .85; }
+  .koltuk.bos { background: transparent; color: var(--soluk); }
+  .s5 { background: var(--s5); color: var(--s5c); border-color: transparent; }
+  .s6 { background: var(--s6); color: var(--s6c); border-color: transparent; }
+  .s7 { background: var(--s7); color: var(--s7c); border-color: transparent; }
+  .s8 { background: var(--s8); color: var(--s8c); border-color: transparent; }
+  .ek { display: grid; grid-template-columns: repeat(2, minmax(0, 160px)); gap: 6px; margin-top: 10px; }
+  .renkler { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; margin-top: 10px; }
+  .renkler span { padding: 2px 8px; border-radius: 6px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 640px) {
+    .koltuk { min-height: 50px; font-size: 10px; padding: 3px; }
+    .sinif { gap: 5px; }
+    .koltuk .ad { display: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <div class="ust">T.C. KOCASİNAN KAYMAKAMLIĞI • KADİR HAS ORTAOKULU MÜDÜRLÜĞÜ</div>
+  <h1>Deneme Sınavı Salon ve Gözetmen Programı</h1>
+  <div class="hazirlayan">Hazırlayan: Matematik Öğretmeni Mustafa Karakaya</div>
+</header>
+<main>
+  <section class="kart">
+    <h2>1. Dosyalar</h2>
+    <div class="izgara">
+      <div>
+        <label class="alan" for="excelDosya">Excel v8 dosyası (öğretmenler, nöbet, şubeler, ders programı, öğrenci listesi)</label>
+        <input type="file" id="excelDosya" accept=".xlsm,.xlsx,.xls">
+        <div class="durum" id="excelDurum"></div>
+      </div>
+      <div>
+        <label class="alan" for="eokulDosya">e-Okul sınıf listesi (.xls), isteğe bağlı</label>
+        <input type="file" id="eokulDosya" accept=".xls,.xlsx">
+        <div class="durum" id="eokulDurum"></div>
+        <p class="ipucu">Yüklerseniz Excel'deki öğrenci listesinin yerine bu kullanılır.</p>
+      </div>
+    </div>
+    <div class="kvkk">Dosyalar bu bilgisayardan çıkmaz: bütün hesap tarayıcınızda yapılır, hiçbir sunucuya gönderilmez. Sayfayı kapatınca bilgiler silinir.</div>
+  </section>
+
+  <section class="kart" id="ayarKart" hidden>
+    <h2>2. Sınav ayarları</h2>
+    <div class="izgara">
+      <div>
+        <label class="alan" for="tarih">Sınav tarihi</label>
+        <input type="date" id="tarih">
+        <div class="durum" id="gunAdi"></div>
+      </div>
+      <div>
+        <label class="alan" for="tohum">Karıştırma anahtarı (herhangi bir sayı)</label>
+        <input type="number" id="tohum" min="0" step="1">
+        <p class="ipucu">Sayı değişince öğrenciler kurallar korunarak yeniden karıştırılır.</p>
+      </div>
+    </div>
+    <div class="izgara" style="margin-top:12px">
+      <div>
+        <label class="alan" for="raporAra">O gün okula gelmeyen (raporlu / izinli) öğretmenler</label>
+        <input type="search" id="raporAra" placeholder="Ad yazarak arayın">
+        <div class="liste" id="raporListe"></div>
+      </div>
+      <div>
+        <label class="alan">Sınava giren şubeler</label>
+        <div class="subeler" id="subeListe"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="kart" id="sonucKart" hidden>
+    <div class="ozet" id="ozet"></div>
+    <div id="uyarilar"></div>
+  </section>
+
+  <section id="sekmeKart" hidden>
+    <div class="sekmeler" role="tablist">
+      <button role="tab" data-sekme="gozetmen" aria-selected="true">Gözetmen görevlendirmesi</button>
+      <button role="tab" data-sekme="salon" aria-selected="false">Salon oturma planı</button>
+      <button role="tab" data-sekme="sube" aria-selected="false">Şube listeleri</button>
+    </div>
+    <div class="kart" data-panel="gozetmen"></div>
+    <div class="kart" data-panel="salon" hidden>
+      <div class="secici"><div><label class="alan" for="salonSec">Salon</label><select id="salonSec"></select></div></div>
+      <div id="salonPlan"></div>
+    </div>
+    <div class="kart" data-panel="sube" hidden>
+      <div class="secici"><div><label class="alan" for="subeSec">Şube</label><select id="subeSec"></select></div></div>
+      <div id="subeTablo" class="tablo-kap"></div>
+    </div>
+  </section>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="src/gozetmen.js"></script>
+<script src="src/ogrenci.js"></script>
+<script src="src/excel-oku.js"></script>
+<script src="src/arayuz.js"></script>
+</body>
+</html>

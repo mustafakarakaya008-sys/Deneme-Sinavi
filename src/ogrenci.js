@@ -32,8 +32,14 @@
     return m ? Number(m[1]) : null;
   }
 
-  // Oturma zinciri: Excel Duzen!A3:AN3 ve "A koltuk" sayısı (B2)
+  // Oturma zinciri: Excel Duzen!A3:AN3 ve "A koltuk" sayısı (B2). Kişisel veri değildir.
+  var VARSAYILAN_ZINCIR = {
+    Z: [18, 31, 5, 28, 15, 34, 1, 25, 19, 35, 4, 29, 14, 38, 8, 24, 11, 39, 9, 21,
+        17, 33, 3, 27, 13, 37, 10, 22, 16, 32, 6, 30, 12, 40, 2, 26, 20, 36, 7, 23],
+    capA: 20
+  };
   function zincirAl(zincir) {
+    if (!zincir) return VARSAYILAN_ZINCIR;
     var z = zincir['452'] || zincir;
     return { Z: z.Z, capA: z.capA };
   }
