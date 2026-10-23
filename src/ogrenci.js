@@ -151,6 +151,7 @@
         else if (tasma2 >= 0) koltuk = pCap + 1 + ekBir + tasma2;
         else koltuk = zc.Z[zincirYeri];
         s.koltuk = koltuk;
+        s.yari = AD < bolme ? 1 : 2; // oturma planında renk: listenin ilk yarısı mavi, ikinci yarısı turuncu
         if (koltuk > pCap) {
           s.sutun = 0; s.masa = 0; s.taraf = (koltuk - pCap - 1) % 2;
           s.yer = 'Ek sıra, ' + (s.taraf === 0 ? 'sol' : 'sağ') + ' taraf';
@@ -177,7 +178,7 @@
       return {
         sira: s.sira, no: s.no, ad: s.ad, cinsiyet: s.cinsiyet, sinif: s.sinif, seviye: s.seviye, grup: s.grup,
         sinifNo: s.sinifNo, salon: s.salon, salonAdi: s.salonAdi, koltuk: s.koltuk,
-        sutun: s.sutun, masa: s.masa, taraf: s.taraf, yer: s.yer
+        sutun: s.sutun, masa: s.masa, taraf: s.taraf, yer: s.yer, yari: s.yari
       };
     });
     var bul = {};

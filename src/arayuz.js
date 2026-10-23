@@ -117,8 +117,77 @@
     salonCiz();
     subeCiz();
     $('sonucKart').hidden = false;
+    $('pdfKart').hidden = false;
     $('sekmeKart').hidden = false;
+    document.querySelector('[data-pdf=gozetmen]').disabled = !gNo;
   }
+
+  // ---- PDF çıktıları
+  var PDF_KUTUPHANE = [
+    'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js',
+    'https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js'
+  ];
+  var pdfHazir = null;
+  function pdfYukle() {
+    if (pdfHazir) return pdfHazir;
+    pdfHazir = PDF_KUTUPHANE.reduce(function (onceki, adres) {
+      return onceki.then(function () {
+        return new Promise(function (tamam, hata) {
+          var s = document.createElement('script');
+          s.src = adres;
+          s.onload = tamam;
+          s.onerror = function () { pdfHazir = null; hata(new Error('PDF kütüphanesi yüklenemedi; internet bağlantısını kontrol edin.')); };
+          document.head.appendChild(s);
+        });
+      });
+    }, Promise.resolve());
+    return pdfHazir;
+  }
+
+  function pdfBilgisi() {
+    var s = durum.sonuc, okul = durum.okul, tarih = $('tarih').value.split('-');
+    var gozetmen = {};
+    s.goz.salonlar.forEach(function (x) { gozetmen[x.salon] = s.gNo ? x.oturum : [null, null]; });
+    var oturumSaati = s.goz.saat, sinavSaati = {};
+    [1, 2].forEach(function (g) {
+      var a = oturumSaati[0] ? oturumSaati[0][g].split('–') : ['', ''], b = oturumSaati[1] ? oturumSaati[1][g].split('–') : a;
+      sinavSaati[g] = a[0] + ' – ' + b[1];
+    });
+    return {
+      sinavAdi: okul.ayarlar.sinavAdi || 'DENEME SINAVI',
+      tarihMetni: tarih[2] + '.' + tarih[1] + '.' + tarih[0],
+      gunAdi: s.gNo ? Gozetmen.GUNLER[s.gNo - 1] : '',
+      sinavSaati: sinavSaati, oturumSaati: oturumSaati, gozetmen: gozetmen,
+      salonlar: s.ogr.salonlar, ogrenciler: s.ogr.ogrenciler,
+      subeler: okul.subeler.filter(function (x) { return durum.giren[x]; }),
+      imza: okul.imza || {}
+    };
+  }
+
+  var PDF_AD = { gozetmen: '1_Gozetmen_Gorevlendirme', oturmaPlani: '2_Salon_Oturma_Planlari', yoklama: '3_Salon_Yoklama_Listeleri', subeListesi: '4_Sube_Listeleri' };
+  function pdfOlustur(tur) {
+    var dugmeler = document.querySelectorAll('[data-pdf]');
+    dugmeler.forEach(function (d) { d.disabled = true; });
+    durumYaz('pdfDurum', 'PDF hazırlanıyor…');
+    return pdfYukle().then(function () {
+      var b = pdfBilgisi();
+      var dosya = PDF_AD[tur] + '_' + $('tarih').value + '.pdf';
+      return new Promise(function (tamam) {
+        pdfMake.createPdf(PdfBelge[tur](b)).download(dosya, function () { tamam(dosya); });
+      });
+    }).then(function (dosya) {
+      durumYaz('pdfDurum', dosya + ' indirildi.', 'tamam');
+    }).catch(function (h) {
+      durumYaz('pdfDurum', 'PDF hazırlanamadı: ' + h.message, 'hata');
+    }).then(function () {
+      dugmeler.forEach(function (d) { d.disabled = false; });
+      document.querySelector('[data-pdf=gozetmen]').disabled = !durum.sonuc.gNo;
+    });
+  }
+  document.querySelector('.pdf-dugmeler').addEventListener('click', function (e) {
+    var tur = e.target.getAttribute('data-pdf');
+    if (tur) pdfOlustur(tur);
+  });
 
   function gozetmenBul(salonAdi) {
     var s = durum.sonuc.goz.salonlar.filter(function (x) { return x.salon === salonAdi; })[0];
@@ -235,5 +304,5 @@
   });
 
   // Testlerde ve geliştirmede dosya seçmeden yükleyebilmek için
-  window.Uygulama = { excelYukle: excelYukle, eokulYukle: eokulYukle, durum: durum };
+  window.Uygulama = { excelYukle: excelYukle, eokulYukle: eokulYukle, durum: durum, pdfYukle: pdfYukle, pdfBilgisi: pdfBilgisi };
 })();

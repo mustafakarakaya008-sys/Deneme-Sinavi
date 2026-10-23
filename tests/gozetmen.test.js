@@ -178,6 +178,18 @@ for (var gun = 1; gun <= 5; gun++) (function (gun) {
   });
 })(gun);
 
+// ---- Hafta sonu
+test('Hafta sonu seçilince hesap çökmez, hiçbir salona gözetmen yazılmaz', function () {
+  var h = [];
+  [{ gunNo: 0 }, { tarih: '24.10.2026' }, { tarih: new Date(2026, 9, 25) }].forEach(function (ayar) {
+    var s = G.dagit(veri, ayar);
+    if (s.gun !== 0) h.push(JSON.stringify(ayar) + ': gün ' + s.gun);
+    herAtama(s, function (sl) { h.push(JSON.stringify(ayar) + ': ' + sl.salon + ' salonuna gözetmen yazılmış'); });
+    if (s.salonlar.length !== 46) h.push(JSON.stringify(ayar) + ': salon sayısı ' + s.salonlar.length);
+  });
+  return h;
+});
+
 // ---- Raporlu öğretmen senaryosu
 test('Raporlu seçilen öğretmen hiçbir güne yazılmaz; yerine başka dersin öğretmeni ya da "(N)" gelir', function () {
   var h = [];

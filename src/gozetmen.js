@@ -122,7 +122,8 @@
   // ayar: { tarih, raporlu: [ad], sinavaGiren: [şube] (boşsa hepsi), grup: function(şube) -> 1|2 }
   function dagit(veri, ayar) {
     ayar = ayar || {};
-    var gun = ayar.gunNo || gunNo(ayar.tarih);
+    // gunNo 0 (hafta sonu) da geçerli bir değerdir: o zaman kimseye görev yazılmaz
+    var gun = ayar.gunNo !== undefined ? ayar.gunNo : (ayar.tarih ? gunNo(ayar.tarih) : 0);
     var gunAdi = GUNLER[gun - 1] || '';
     var zm = zamanlama(veri);
     var raporlu = {};

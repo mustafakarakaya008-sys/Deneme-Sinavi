@@ -71,6 +71,9 @@
   .ek { display: grid; grid-template-columns: repeat(2, minmax(0, 160px)); gap: 6px; margin-top: 10px; }
   .renkler { display: flex; gap: 10px; flex-wrap: wrap; font-size: 12px; margin-top: 10px; }
   .renkler span { padding: 2px 8px; border-radius: 6px; }
+  .pdf-dugmeler { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pdf-dugmeler button { border: 0; background: var(--vurgu); color: #fff; padding: 10px 14px; border-radius: 8px; font: inherit; cursor: pointer; }
+  .pdf-dugmeler button:disabled { opacity: .5; cursor: default; }
   [hidden] { display: none !important; }
   @media (max-width: 640px) {
     .koltuk { min-height: 50px; font-size: 10px; padding: 3px; }
@@ -136,6 +139,18 @@
     <div id="uyarilar"></div>
   </section>
 
+  <section class="kart" id="pdfKart" hidden>
+    <h2>3. PDF çıktıları (renkli, A4)</h2>
+    <div class="pdf-dugmeler">
+      <button type="button" data-pdf="gozetmen">Gözetmen görevlendirmesi</button>
+      <button type="button" data-pdf="oturmaPlani">Salon oturma planları</button>
+      <button type="button" data-pdf="yoklama">Salon yoklama listeleri</button>
+      <button type="button" data-pdf="subeListesi">Şube listeleri</button>
+    </div>
+    <div class="durum" id="pdfDurum"></div>
+    <p class="ipucu">PDF bu bilgisayarda hazırlanır ve İndirilenler klasörüne kaydedilir; hiçbir yere gönderilmez.</p>
+  </section>
+
   <section id="sekmeKart" hidden>
     <div class="sekmeler" role="tablist">
       <button role="tab" data-sekme="gozetmen" aria-selected="true">Gözetmen görevlendirmesi</button>
@@ -157,6 +172,7 @@
 <script src="src/gozetmen.js"></script>
 <script src="src/ogrenci.js"></script>
 <script src="src/excel-oku.js"></script>
+<script src="src/pdf.js"></script>
 <script src="src/arayuz.js"></script>
 </body>
 </html>

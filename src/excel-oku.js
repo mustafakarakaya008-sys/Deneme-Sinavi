@@ -86,13 +86,23 @@
     }
     while (ogrenciListesi.length && ogrenciListesi[ogrenciListesi.length - 1].every(function (x) { return x === null || x === ''; })) ogrenciListesi.pop();
 
+    // İmza satırları: adlar koda yazılmaz, Excel v8'in görevlendirme sayfasından okunur
+    var imza = { hazirlayan: '', hazirlayanUnvan: '', onaylayan: '', onaylayanUnvan: '' };
+    ws = wb.Sheets['Gözetmen (Sabahçı)'];
+    if (ws) {
+      imza = {
+        hazirlayan: yazi(deger(ws, 'B50')), hazirlayanUnvan: yazi(deger(ws, 'B51')),
+        onaylayan: yazi(deger(ws, 'E50')), onaylayanUnvan: yazi(deger(ws, 'E51'))
+      };
+    }
+
     ws = sayfa(wb, 'Ayarlar');
     var tarih = deger(ws, 'C7'), raporlu = [];
     for (r = 19; r <= 30; r++) { var rp = yazi(deger(ws, 'C' + r)); if (rp) raporlu.push(rp); }
 
     return {
       ogretmenler: ogretmenler, subeler: subeler, subeBilgi: subeBilgi, program: program,
-      saatler: saatler, akis: akis, ogrenciListesi: ogrenciListesi,
+      saatler: saatler, akis: akis, ogrenciListesi: ogrenciListesi, imza: imza,
       ayarlar: {
         sinavAdi: yazi(deger(ws, 'C6')),
         tarih: typeof tarih === 'number' ? excelTarih(tarih) : null,
